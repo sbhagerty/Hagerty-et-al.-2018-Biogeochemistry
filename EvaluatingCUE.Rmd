@@ -27,6 +27,7 @@ source('Default_Params.R')
 ####Model steady state solutions 
 This is its own file so I can recalculate using the same source code when I change parameter values.
 Output is called by S_soln, D_soln, B_soln, E_soln, ss_CUE (which is the steady state solutions for the SOC, DOC, Biomass, Enzyme pools and the emergent CUE).  
+
 ```{r steadystatesolns, echo=FALSE}
 source('steadystatesolns.R')
 ```
@@ -35,17 +36,22 @@ source('steadystatesolns.R')
 The code solved with equilibrium values in modelout dataframe (with columns:time, S, D, B, E), equilibrium values are stored as Seq, Beq, Deq, and Eeq for each pool.This file calls for parameter value and steady state solns files in the code.
 
 This chunk has diff equations of steady state model as function ss_model. This function requires lists of 'state' and 'parameters' which is in the file, the state list draws off the steady state soln file which is sources in this file.  
+
 ```{r}
 source('steadystatemodel.R')
 ```
 
 ###Isotope model
-This file calls for the file 'Default_Params.R' and the equilibrium pool size values calculated in the 'steadystatemodel.R' fire. This file also calculates the CUE for the steady state, CUE_S, CUE_B, CUE_C over time for the isotope model this is where you want to go to change the time of the isotope simulation results from isotope simulation. Outpus go in dataframe called imodel columns: time, Si, Bi, Di, Ei, CO2i, dB, dD, CUE.B, CUE.S, CUE.C, emergentCUE this file calls for the steady state solutions file as its needed for sensitivity chunk later
+
+This file calls for the file 'Default_Params.R' and the equilibrium pool size values calculated in the 'steadystatemodel.R' file. This file also calculates the CUE for the steady state, CUE_S, CUE_B, CUE_C over time for the isotope model this is where you want to go to change the time of the isotope simulation results from isotope simulation. Outpus go in dataframe called imodel columns: time, Si, Bi, Di, Ei, CO2i, dB, dD, CUE.B, CUE.S, CUE.C, emergentCUE this file calls for the steady state solutions file as its needed for sensitivity chunk later
+
 ```{r}
 source('isotopemodel.R')
 ```
 ####Evaluating how CUE changes over time. 
+
 So here we run the isotope model and the steady state model and plot CUE.S, CUE.B, CUE.C, and emergentCUE over 150 h simulation.
+
 ```{r echo=FALSE}
 f1=as.data.frame(matrix(0,151,5))
 f1$time<-imodel$time
@@ -67,9 +73,11 @@ labels+theme(legend.position=c(0.75,.5))+ylim(0.3,0.7)
 #Part 2 Comparison of parameter sensitivity for steady state CUE and isotopic measurement of CUE
 
 ###Testing parameter sensitivities
+
 -In this scenario the addition of the label is still equal to the 1/1000th of the Deq value and is not changed as
 -the D_soln changes with changes in parameter values. 
 This file has a lot of output, dataframes are measurement_parameter where measurements are YS, YB, YC, trueCUE and parameters are ae, re, mr Each data frame has 2 columns of measurement_parameter_value where value is the low or high param value specific to each parameter, the last column is parameter_sens (ex. ae_sens) which is the measurement local sensitivity to changes in parameter
+
 ```{r}
 source('sensitivityanalysis.R')
 ```
@@ -88,7 +96,7 @@ f3+facet_grid(.~variable, scales="free_y")+mytheme+scale_colour_brewer(palette="
 ```{r}
 source('varyparameters.R')
 ```
-Graph
+Manuscript Figure 4 
 ```{r}
 f4<-ggplot(figfour, aes(param_value,value))+geom_line(size=.75)+aes(color=factor(variable))
 f4+facet_grid(variable~param,scales="free")+ylab("")+
